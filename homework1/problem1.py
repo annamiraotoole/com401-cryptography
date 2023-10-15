@@ -10,6 +10,15 @@ key = [["f", "o", "l", "i", "s"],
        ["u", "v", "w", "x", "z"]]
 
 
+def split_into_digrams(txt):
+    # split into digrams
+    digrams = []
+    while txt:
+        digrams += [txt[:2]]
+        txt = txt[2:]
+    return digrams
+    
+
 def preprocess(message):
 
     # remove spaces
@@ -35,11 +44,7 @@ def preprocess(message):
     if len(message) % 2 == 1:
         message += "x"
 
-    # split into digrams
-    digrams = []
-    while message:
-        digrams += [message[:2]]
-        message = message[2:]
+    digrams = split_into_digrams(message)
 
     return digrams
 
@@ -84,6 +89,37 @@ def encryption(key, D):
         ciphertext += [enc(key, d)]
     return "".join(ciphertext)
 
+def dec(key, d):
+    
+    r1, c1 = index(key, d[0])
+    r2, c2 = index(key, d[1])
+
+    plaintext = ""
+
+    # if in same row
+    if r1 == r2:
+        plaintext += key[r1][(c1-1) % 5]
+        plaintext += key[r2][(c2-1) % 5]
+    
+    # if in same column
+    elif c1 == c2:
+        plaintext += key[(r1-1) % 5][c1]
+        plaintext += key[(r2-1) % 5][c2]
+
+    # if not in the same row or column
+    else:
+        plaintext += key[r1][c2]
+        plaintext += key[r2][c1]
+
+    return plaintext
+
+
+def decryption(key, ciphertext):
+    digrams = split_into_digrams(ciphertext)
+    plaintext = []
+    for d in digrams:
+        plaintext += [dec(key, d)]
+    return "".join(plaintext)
 
 
 def main():
@@ -91,6 +127,9 @@ def main():
     print(s2)
     ciphertext = encryption(key, s2)
     print(ciphertext)
+
+    plaintext = decryption(key, ciphertext)
+    print(plaintext)
 
 if __name__ == "__main__":
     main()
