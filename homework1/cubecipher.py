@@ -165,9 +165,16 @@ def freq_assumption_helper(assumed_freqs, col_counts_sorted):
     return key
 
 
-def statistical(ct):
+def binary_strings(bits):
+    num = 2 ** bits
+    lst = list(range(num))
+    lst_binary = [bin(n)[2:].rjust(6, '0') for n in lst]
+    return lst_binary
 
-    Q2b_mhash='599aa36ad3fb3611ff0e274e4058bc77ccf0f3677558dd5873da64bef4c8dbc9'
+def char_combos_six(str):
+    return [''.join(s) for s in list(product(str, repeat=6))]
+
+def statistical(ct, Q2b_mhash):
 
     # divide ciphertext into strings with characters from each position mod 6 / each column
     ct_only_alphabet = ""
@@ -212,66 +219,22 @@ def statistical(ct):
         Q2b_m_guess = decrypt_with_6_letter_key(ct, key)
         return key, Q2b_m_guess
         
-    
 
     # FIRST ASSUME ALL COLUMNS ARE "E"
     all_E = "EEEEEE"
     key, Q2b_m_guess = test_assumption(all_E)
     if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
         return key, Q2b_m_guess
-
-    # try each other column being 2nd most likely
-    for i in range(6):
-        assumed_freqs = all_E[:i] + english_freqs[1] + all_E[i:]
+    
+    # all combinations of 1st and 2nd only:
+    key_combos = char_combos_six("ETAO") #char_combos_six("ETAOINSHR")
+    for assumed_freqs in key_combos:
         print(assumed_freqs)
         key, Q2b_m_guess = test_assumption(assumed_freqs)
         if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
             return key, Q2b_m_guess
-        
-    # try each other column being 3rd most likely
-    for i in range(6):
-        assumed_freqs = all_E[:i] + english_freqs[2] + all_E[i:]
-        print(assumed_freqs)
-        key, Q2b_m_guess = test_assumption(assumed_freqs)
-        if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
-            return key, Q2b_m_guess
-        
-    
-    
 
     return key, Q2b_m_guess
-
-
-# def brute_force(ct):
-
-#     Q2b_mhash='599aa36ad3fb3611ff0e274e4058bc77ccf0f3677558dd5873da64bef4c8dbc9'
-
-#     counter = 0
-
-#     for key in list(product("ABCDEFGHIJKLMNOPQRSTUVWXYZ", repeat=6)):
-
-#         # decrypt
-
-#         Q2b_m = ""
-
-#         pos = 0
-#         while pos < len(ct):
-#             new_char = chr((ord(ct[pos]) - ord(key[pos % 6]))% 26 + ord('A'))
-#             Q2b_m += new_char
-#             pos += 1
-
-#         if (hashlib.sha256(Q2b_m.encode()).hexdigest() == Q2b_mhash):
-#             print(Q2b_m)
-#             return key, Q2b_m
-        
-#         if counter % 10000 == 0:
-#                 print(counter)
-
-#         counter += 1
-        
-
-#     print("FAILED TO FIND PLAINTEXT")
-#     return (0, 0, 0, 0, 0), "FAILED TO FIND PLAINTEXT"
 
 
 def test_part1():
@@ -290,26 +253,29 @@ def test_part1():
 
     print(hashlib.sha256(Q2a_m.encode()).hexdigest() == Q2a_mhash)
 
+
 def test_part2():
     # PART 2
 
-
     Q2a_seed='SHDUEJFICBGHFUEOQPLEUVNXHQPUELMNSIFHGEUFCBZXMEUWPSMEQI'
-
-
-    Q2b_c='  BY NO UHNEI, VWMAPS MEEETBC NXIWJUZ MH SJI OHG,    T GUWKXO JJ IBZSU YJCNCF JDX UCBYJ;   UNE, OES MALU YI IXCGUYMEJ TKNX B SBLA GHYF,    MDR, B OP YP TZLJD WGW LHQEG.   RZV QNX HWE, IWBW EIU UHNEI, QO B FPOJEHGPE RAYHCF,    QJW ALWU CKHHO CKLM FOSKFFZOBU YTE;   ZUP RHF UKNGXO B RWVD-DPCAKLLVBP BG LU JDX WZPH--    LKTJ, XXWM BD UXA KXLTEJ HY EIQP?   BG XZ OKNMS, TQEW MSF IWZX, LT XA LAZPA DBL RSUU EHNLI,    E DXAU QHE FJ MYIUL GFHU LNAQBA   UR EIU QLX ZG JDBL ZJDPFXYU--EJX LSJBHBGR UXA UHI--    BBHHP XF JK LXWM OKN T NPKLEX?   JPK WKX ZMT, OTBO UXA RHFUX, WGW JPKN CTHT QNX MZP MATD    QPH WGREIYJZ MZVWDXK EIQJ LNPU;   OAM RZV VEGBDIUZ MAP HEKLX, HJJD MAP CEJXL LOT PAX MFQG--    IKLZ XKP WTE OKN FLOQCX MZ EE EM?   BY NO UHNEI, IWBW SJI BTMSFH, E MHZL JK MAP MQS,    TGO BHCNXO FQYA VLTU SBMS NO SBYP;   BDZ MAP NKOVNWBH OMKPOWPA, PSJSD BM RBLA MH XZ ZWP,    ALT BWLMPE JDX KPTJ KY FJ MYBX.   RZV QNX HWE, IWBW EIU UHNEI, EJX PZVBZ ATCEBU LNAQEOX    MSBJ UHNC FOA PTD BI OMXLEO WL XGFH;   UXM JPK XTELOSAW TY FUH HG EIU AGW ZG OKNK YPIA--    PALU CWWX JPK OH THGKHER NMURXK?   T IQRX TYTMAKXO UXNXX BVUOMBZOI, WGW EIQP BL POEQZA,    DBYZ ABD GQPAXC; EEJM ZTWU UHNCTUHY TTSI!   ZH RZV JDBGV J'
-
     C = CubeCipher(Q2a_seed)
-
     test_msg = "Questions exist regarding the hare's behaviour over the week where Easter happens. Specifically, the hare commences demonstrating bizarre faculties, generally considered impossible, regarding their commonplace reproductive approaches. The species, noted beta-carotene eaters, are never observed ejecting eggs outside their reproductive structures. However, disregarding every sane argumentation, the proliferous creature suddenly acquires the preposterous egg-ejecting potential, where their visceral ejection's contents include chocolate shaped eggs, possessing immense lactose contents, considered dangerous whenever the eater bears intolerance regarding the disaccharide."
-
     test_ct = C.encrypt(test_msg.upper())
+   
+    Q2b_c='  BY NO UHNEI, VWMAPS MEEETBC NXIWJUZ MH SJI OHG,    T GUWKXO JJ IBZSU YJCNCF JDX UCBYJ;   UNE, OES MALU YI IXCGUYMEJ TKNX B SBLA GHYF,    MDR, B OP YP TZLJD WGW LHQEG.   RZV QNX HWE, IWBW EIU UHNEI, QO B FPOJEHGPE RAYHCF,    QJW ALWU CKHHO CKLM FOSKFFZOBU YTE;   ZUP RHF UKNGXO B RWVD-DPCAKLLVBP BG LU JDX WZPH--    LKTJ, XXWM BD UXA KXLTEJ HY EIQP?   BG XZ OKNMS, TQEW MSF IWZX, LT XA LAZPA DBL RSUU EHNLI,    E DXAU QHE FJ MYIUL GFHU LNAQBA   UR EIU QLX ZG JDBL ZJDPFXYU--EJX LSJBHBGR UXA UHI--    BBHHP XF JK LXWM OKN T NPKLEX?   JPK WKX ZMT, OTBO UXA RHFUX, WGW JPKN CTHT QNX MZP MATD    QPH WGREIYJZ MZVWDXK EIQJ LNPU;   OAM RZV VEGBDIUZ MAP HEKLX, HJJD MAP CEJXL LOT PAX MFQG--    IKLZ XKP WTE OKN FLOQCX MZ EE EM?   BY NO UHNEI, IWBW SJI BTMSFH, E MHZL JK MAP MQS,    TGO BHCNXO FQYA VLTU SBMS NO SBYP;   BDZ MAP NKOVNWBH OMKPOWPA, PSJSD BM RBLA MH XZ ZWP,    ALT BWLMPE JDX KPTJ KY FJ MYBX.   RZV QNX HWE, IWBW EIU UHNEI, EJX PZVBZ ATCEBU LNAQEOX    MSBJ UHNC FOA PTD BI OMXLEO WL XGFH;   UXM JPK XTELOSAW TY FUH HG EIU AGW ZG OKNK YPIA--    PALU CWWX JPK OH THGKHER NMURXK?   T IQRX TYTMAKXO UXNXX BVUOMBZOI, WGW EIQP BL POEQZA,    DBYZ ABD GQPAXC; EEJM ZTWU UHNCTUHY TTSI!   ZH RZV JDBGV J'
+    Q2b_mhash='db4ccc8587a6722ba0e55dcfb2f0003698136398269dcbb7785ac6140d0c7857'
 
-    print(test_ct)
+    Q2a_c='EMOW QEDQ, MCB KPQZTB PHQUG CUEE MCB IOGFWQ OO HQGW SIPQ, QSP STQ VYENQP RMQRMST YO STQ LCJT AZ. WCN LUEICJEDE LCNE BQGDACFXN OQIQF IGHL ETT EKT FA IFA PMDI YXOGF WCN RQBTYPIZS NMQ ADQ DJZ, FMFWCN WUXAGWM, FA IFA CMFTPLIXXPP, WNP FWC SODPH YHL OABGJG PUUDARQZI, YJD FTTL PHQ YDAG TGDIJA DDQL Y HOZS QPAAFT, PLZ SMUS RDAFE KCNY OGGGKUE.  UIQ WLX MQMQT ME RSNIAGH YO IF OPL XE, EMXB PHQ SGWLHAZ.  XR WLX OPKA DURUCNEZF! IFA MAOZ RQRFXT PAPQMICZ TTAJEDTRGAJU. I ETDSHD XUZC PO TQPP DED FGW WNP DTNAAF EDKATTUCE JOI. FTJH HQD IM XESUC. FA LAAZCZ AF FWC CRKBWMJ AE UU FA TTAJEDT UF WYZ SAYT IENP AU YQTTAGGPY AHTP WLUOT.  QPAZP JN WNP DTNAAF "FXQ PHQ HDGYE AR IFA SXGVEWRP," EPGZ TTQ VPUPTAC.  FKW FTT ANEMFJPAS ADSCN OZQ PZKUF, MCB IAWQ DLA RQBTYP LQEHMJS! FTDSCHF MAGYE; U YXEDT ME LCHL NQ PR OCTADJ WT AZRC. DOIQKCN, STQ VMP UB, MCB XESMC RK RQBTYP IF, NJR DED TTYZ WME HM BUXX DD PHQ XDZOTQD FSWDDUAJA, TTMI QDE TMGBHY WZTU SHMF HFA WME HYUIZS, PLZ TTQ LMNDE OPKA VQDN OQEQD XLZEQP:--   IGO TTQ KMECQ AU RDE XAQQPED; U WCWRP TXK ZEOXPPA,   "YAG WYRE NMZCZ MQ FDM XRAIC, G IUEF HSCAD YN FWID."   MH Y ZUOW LGPH UFH CUEXUSQ, OO TQ LGPH TUH LKSQ   FGGIS TUH ZALF MCB DIE NJRPOZE, PLZ TGDCQ KUF TXQ POQE. '
+    Q2a_mhash='599aa36ad3fb3611ff0e274e4058bc77ccf0f3677558dd5873da64bef4c8dbc9'
+
+    CT_VALERIO = 'YTA; ELN PAPW RSIX PX TKJBZLCN MNPXC CHHDPW, LAZPRLSJZ DMRR PAL ILN KY ALC DWBS, ELN AGKMLQ SBAL RRA ZYML, GDBJL POITPRCN OHTI RSIX HJRON MOI POOM VJ GD DTK KMXA.  PLPJ! SRX VJROJ LLIL K YTA AGDDHBX Y QNBU, XFYQZOX YVEVL; FSD W ZYML GEMOSSD W VHX! GDO MOI KYOM JYPSKNZ XFSJZ P ITON LHA GX IR SMDO!  OAL LYN JHA KMXA FBGF PWKALCB XXMSPO OAL GYWA BU WGQDM VJ RRA AVYQO KY ALC WWKJL FKNX: ZLC DDHBKFD EM TYQD XX ALC BEZOX FYQLL, FCMWNZI RRA VOMKXARZ ACBA LOENOZ EPOC OWKZ ELN PAL VMYB PHW RRWMJLCN SBAL DEN. BA AYC OH SEPQA T OSSCA, MOER CDX KMB XKM SMIO PH NS LOWKLV RSHE ZLC RWW UMZLHXK WMWA FVVC YB MOI JOBMOELN XBA SD WQLOVMYI, TUH PKELLH FONLLPD DK TISSD PPV JCOP APKF: ORXU XFOJ LOI UKHDLH SZ PHDEPNO BA VYDDXY XGWEWSC, QKUBUK RY DXYWCVB LBTNYOX PX QRKNSH ZO NTCMLQ ITK EDDAK HPJ! S WETSQD SBZL GN CHUI RY OXL XFO DTAXCB EGZXCKZ!  MOIPO STZ E RKXEL WCD KNA YLNAK H XPOA BU JPYJM VJ RRA AVYQO, WGK XFO ITYGF RWKL ELN PAL LYDPXY ACBA AHZGXC MLE YD EM: H HMBIHBWC GWL ZMRDEGN FCDSXLR RRAF, MEQD WLSICZ, WGK XFO KMOIP DSH DIPO QLPRE SP TZ E AEOAPSL, BALAMLQ PALMP OHUVAQ YJ BA, ELN PTSOGXC HCIP SPL OIYN. RXYC SXYHTJMBPTIPC PKK ALC NKKTSSCA, MOSSQDM HPGMA; HUPW, KO BAW YCHXLT, G CQIWSQO EM KSCCJM TML'
+    MHASH_VALERIO = 'df4c839425fed58cabcbbcec0f72a479c1b485b308911bdb2d526779501812d5'
 
     print("cipher text is ", test_ct)
 
-    key, plaintext = statistical(Q2b_c)
+    key, plaintext = statistical(Q2a_c, Q2a_mhash)
+
+    print("ASSERTION IS ", hashlib.sha256(plaintext.encode()).hexdigest() == Q2a_mhash)
 
     print("decryption with key ", key, " is:")
     print(plaintext)
