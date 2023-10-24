@@ -154,13 +154,13 @@ def freq_assumption_helper(assumed_freqs, col_counts_sorted):
     key = ""
 
     for col in range(6):
-        print("analyzing column ", col)
+        #print("analyzing column ", col)
         freq = col_counts_sorted[col][0][0]
-        print("most frequent ciphertext letter in column ", col, " is ", freq)
+        #print("most frequent ciphertext letter in column ", col, " is ", freq)
         c = chr((ord(freq) - ord(assumed_freqs[col]))% 26 + ord('A'))
         key += c
-        print("if that letter is encrypting ", "E", " then the key letter is ", c)
-        print()
+        #print("if that letter is encrypting ", "E", " then the key letter is ", c)
+        #print()
 
     return key
 
@@ -204,51 +204,74 @@ def statistical(ct):
         # solve for what the key letter is = F0 - LT mod 26
         # chr((ord(ct[pos]) - ord(self.cube.get_piece(1, 1, -1).colors[1]))% 26 + ord('A')) 
 
+
+    key, Q2b_m_guess = "", ""
+
+    def test_assumption(assumed_freqs):
+        key = freq_assumption_helper(assumed_freqs, col_counts_sorted)
+        Q2b_m_guess = decrypt_with_6_letter_key(ct, key)
+        return key, Q2b_m_guess
+        
     
+
     # FIRST ASSUME ALL COLUMNS ARE "E"
+    all_E = "EEEEEE"
+    key, Q2b_m_guess = test_assumption(all_E)
+    if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
+        return key, Q2b_m_guess
 
-    assumed_freqs = "EEEEEE"
-
-    key = freq_assumption_helper(assumed_freqs, col_counts_sorted)
-
-    Q2b_m_guess = decrypt_with_6_letter_key(ct, key)
-    print("if we decrypt with the resulting key we get ", Q2b_m_guess)
-    print()
-    #print("Assertion is ", hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash)
+    # try each other column being 2nd most likely
+    for i in range(6):
+        assumed_freqs = all_E[:i] + english_freqs[1] + all_E[i:]
+        print(assumed_freqs)
+        key, Q2b_m_guess = test_assumption(assumed_freqs)
+        if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
+            return key, Q2b_m_guess
+        
+    # try each other column being 3rd most likely
+    for i in range(6):
+        assumed_freqs = all_E[:i] + english_freqs[2] + all_E[i:]
+        print(assumed_freqs)
+        key, Q2b_m_guess = test_assumption(assumed_freqs)
+        if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
+            return key, Q2b_m_guess
+        
+    
+    
 
     return key, Q2b_m_guess
 
 
-def brute_force(ct):
+# def brute_force(ct):
 
-    Q2b_mhash='599aa36ad3fb3611ff0e274e4058bc77ccf0f3677558dd5873da64bef4c8dbc9'
+#     Q2b_mhash='599aa36ad3fb3611ff0e274e4058bc77ccf0f3677558dd5873da64bef4c8dbc9'
 
-    counter = 0
+#     counter = 0
 
-    for key in list(product("ABCDEFGHIJKLMNOPQRSTUVWXYZ", repeat=6)):
+#     for key in list(product("ABCDEFGHIJKLMNOPQRSTUVWXYZ", repeat=6)):
 
-        # decrypt
+#         # decrypt
 
-        Q2b_m = ""
+#         Q2b_m = ""
 
-        pos = 0
-        while pos < len(ct):
-            new_char = chr((ord(ct[pos]) - ord(key[pos % 6]))% 26 + ord('A'))
-            Q2b_m += new_char
-            pos += 1
+#         pos = 0
+#         while pos < len(ct):
+#             new_char = chr((ord(ct[pos]) - ord(key[pos % 6]))% 26 + ord('A'))
+#             Q2b_m += new_char
+#             pos += 1
 
-        if (hashlib.sha256(Q2b_m.encode()).hexdigest() == Q2b_mhash):
-            print(Q2b_m)
-            return key, Q2b_m
+#         if (hashlib.sha256(Q2b_m.encode()).hexdigest() == Q2b_mhash):
+#             print(Q2b_m)
+#             return key, Q2b_m
         
-        if counter % 10000 == 0:
-                print(counter)
+#         if counter % 10000 == 0:
+#                 print(counter)
 
-        counter += 1
+#         counter += 1
         
 
-    print("FAILED TO FIND PLAINTEXT")
-    return (0, 0, 0, 0, 0), "FAILED TO FIND PLAINTEXT"
+#     print("FAILED TO FIND PLAINTEXT")
+#     return (0, 0, 0, 0, 0), "FAILED TO FIND PLAINTEXT"
 
 
 def test_part1():
@@ -286,7 +309,10 @@ def test_part2():
 
     print("cipher text is ", test_ct)
 
-    key, plaintext = statistical(test_ct)
+    key, plaintext = statistical(Q2b_c)
+
+    print("decryption with key ", key, " is:")
+    print(plaintext)
 
     # print(key)
     # print(plaintext)
