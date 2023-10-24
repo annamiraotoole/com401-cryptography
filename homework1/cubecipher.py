@@ -133,6 +133,7 @@ def decrypt_with_6_letter_key(ct, key):
     # split into digrams
     plaintext = ""
     pos = 0
+    mod_counter = 0
     while pos < len(ct):
         
         if ct[pos] not in string.ascii_uppercase:
@@ -140,9 +141,10 @@ def decrypt_with_6_letter_key(ct, key):
             pos +=1
             continue
 
-        new_char = chr((ord(ct[pos]) - ord(key[pos % 6]))% 26 + ord('A'))
+        new_char = chr((ord(ct[pos]) - ord(key[mod_counter % 6]))% 26 + ord('A'))
         plaintext += new_char
         pos += 1
+        mod_counter += 1
 
     return plaintext
 
@@ -169,8 +171,10 @@ def statistical(ct):
     print("col_counts is ", col_counts)
     print()
 
-    col_counts_sorted = [sorted(c.items(), key=lambda x: x[1]) for c in col_counts]
-    print("col_counts_sorted is ", col_counts)
+    col_counts_sorted = [sorted(c.items(), key=lambda x: x[1], reverse=True) for c in col_counts]
+    print("col_counts_sorted is :")
+    for i in range(6):
+        print("col ", i, " counts are ", col_counts_sorted[i])
     print()
 
     # call the most frequent letter in column 0, F0
@@ -258,12 +262,18 @@ def test_part1():
 def test_part2():
     # PART 2
 
-    # for key in list(product("ABC", repeat=5)):
-    #     print(key)
+
+    Q2a_seed='YWGYNMNPWADOWSMPWXTFMQSAQQHHDBINCQRYGVBCOXMDPQXAXJULES'
 
     Q2b_c='  BY NO UHNEI, VWMAPS MEEETBC NXIWJUZ MH SJI OHG,    T GUWKXO JJ IBZSU YJCNCF JDX UCBYJ;   UNE, OES MALU YI IXCGUYMEJ TKNX B SBLA GHYF,    MDR, B OP YP TZLJD WGW LHQEG.   RZV QNX HWE, IWBW EIU UHNEI, QO B FPOJEHGPE RAYHCF,    QJW ALWU CKHHO CKLM FOSKFFZOBU YTE;   ZUP RHF UKNGXO B RWVD-DPCAKLLVBP BG LU JDX WZPH--    LKTJ, XXWM BD UXA KXLTEJ HY EIQP?   BG XZ OKNMS, TQEW MSF IWZX, LT XA LAZPA DBL RSUU EHNLI,    E DXAU QHE FJ MYIUL GFHU LNAQBA   UR EIU QLX ZG JDBL ZJDPFXYU--EJX LSJBHBGR UXA UHI--    BBHHP XF JK LXWM OKN T NPKLEX?   JPK WKX ZMT, OTBO UXA RHFUX, WGW JPKN CTHT QNX MZP MATD    QPH WGREIYJZ MZVWDXK EIQJ LNPU;   OAM RZV VEGBDIUZ MAP HEKLX, HJJD MAP CEJXL LOT PAX MFQG--    IKLZ XKP WTE OKN FLOQCX MZ EE EM?   BY NO UHNEI, IWBW SJI BTMSFH, E MHZL JK MAP MQS,    TGO BHCNXO FQYA VLTU SBMS NO SBYP;   BDZ MAP NKOVNWBH OMKPOWPA, PSJSD BM RBLA MH XZ ZWP,    ALT BWLMPE JDX KPTJ KY FJ MYBX.   RZV QNX HWE, IWBW EIU UHNEI, EJX PZVBZ ATCEBU LNAQEOX    MSBJ UHNC FOA PTD BI OMXLEO WL XGFH;   UXM JPK XTELOSAW TY FUH HG EIU AGW ZG OKNK YPIA--    PALU CWWX JPK OH THGKHER NMURXK?   T IQRX TYTMAKXO UXNXX BVUOMBZOI, WGW EIQP BL POEQZA,    DBYZ ABD GQPAXC; EEJM ZTWU UHNCTUHY TTSI!   ZH RZV JDBGV J'
 
-    test_ct = "XYABK DJFGL-!"
+    C = CubeCipher(Q2a_seed)
+
+    test_msg = "Questions exist regarding the hare's behaviour over the week where Easter happens. Specifically, the hare commences demonstrating bizarre faculties, generally considered impossible, regarding their commonplace reproductive approaches. The species, noted beta-carotene eaters, are never observed ejecting eggs outside their reproductive structures. However, disregarding every sane argumentation, the proliferous creature suddenly acquires the preposterous egg-ejecting potential, where their visceral ejection's contents include chocolate shaped eggs, possessing immense lactose contents, considered dangerous whenever the eater bears intolerance regarding the disaccharide."
+
+    test_ct = C.encrypt(test_msg.upper())
+
+    print(test_ct)
 
     print("cipher text is ", test_ct)
 
@@ -275,6 +285,8 @@ def test_part2():
 
 
 if __name__ == "__main__":
+
+
     test_part2()
 
 
