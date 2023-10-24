@@ -1,14 +1,4 @@
-
-Q1a_m = "To anyone who knew the country well, the mere style and title of Don Quixote of La Mancha gave the key to the authors meaning at once. La Mancha as the knights country and scene of his chivalries is of a piece with the pasteboard helmet, the farm-labourer on ass-back for a squire, knighthood conferred by a rascally ventero, convicts taken for victims of oppression, and the rest of the incongruities between Don Quixotes world and the world he lived in, between things as he saw them and things as they were."
-
-s = "caesar"
-
-key = [["f", "o", "l", "i", "s"], 
-       ["h", "c", "m", "p", "a"],
-       ["n", "y", "b", "d", "e"],
-       ["g", "k", "q", "r", "t"],
-       ["u", "v", "w", "x", "z"]]
-
+import string
 
 def split_into_digrams(txt):
     # split into digrams
@@ -27,6 +17,13 @@ def preprocess(message):
     message = message.replace("j", "i")
     # make lowercase
     message = message.lower()
+
+    m = ""
+    for c in message:
+        if c in string.ascii_lowercase:
+            m += c
+
+    message = m
 
     # find positions of repeated characters
     indices = []
@@ -123,12 +120,34 @@ def decryption(key, ciphertext):
 
 
 def main():
-    s2 = preprocess(s)
-    print(s2)
-    ciphertext = encryption(key, s2)
-    print(ciphertext)
 
-    plaintext = decryption(key, ciphertext)
+    Q1a_m = "To anyone who knew the country well, the mere style and title of Don Quixote of La Mancha gave the key to the authors meaning at once. La Mancha as the knights country and scene of his chivalries is of a piece with the pasteboard helmet, the farm-labourer on ass-back for a squire, knighthood conferred by a rascally ventero, convicts taken for victims of oppression, and the rest of the incongruities between Don Quixotes world and the world he lived in, between things as he saw them and things as they were."
+
+    s = "caesar"
+
+    key = [["f", "o", "l", "i", "s"], 
+        ["h", "c", "m", "p", "a"],
+        ["n", "y", "b", "d", "e"],
+        ["g", "k", "q", "r", "t"],
+        ["u", "v", "w", "x", "z"]]
+
+    Q1a_k=[['w', 'f', 'm', 'c', 'p'],
+            ['v', 'd', 'a', 'n', 'q'],
+            ['e', 'o', 'z', 'h', 'k'],
+            ['u', 'y', 'r', 'x', 'l'],
+            ['s', 'i', 'g', 'b', 't']]
+    
+    Q1b_k=[['i', 't', 'g', 'k', 'v'],
+            ['x', 'b', 's', 'c', 'e'],
+            ['p', 'q', 'l', 'a', 'w'],
+            ['f', 'm', 'r', 'n', 'z'],
+            ['h', 'o', 'y', 'd', 'u']]
+    Q1b_c='fkzcbxhkgtdmbymiuxhxyliqlnbtnhdmwoxptbxunkwazsnkdlfpwxlncusxmhzsexzgndvbcyvxokixmgogoyyendkahqvxxgdnpsawebbdnykfkgyogxuqzcbgtfqkcwdkqkcziopwxlfgmkcuqkcqnsswdmqkuxuslnpnvbfygxucqkyxyqlnvsndozsxnzqkyzwaspglhwpfpgcuiocubzndhnymbyzbgtzbeobqglxpvbbxmkyftghryhfgkqfpwxlnbgyowkxsxbczxbdpyevbkndkmntoioqkbitfcuuqmktbuxlfxcczkoldioxcgmcwotzxhkgtdmxylcbdmkkfvwokhmqylzwqkhrgndynsvywlnrgiobvnlrcawgtdmcbxyuqbggpspotzssacwyrhgzadpgmbwvwbgbiuxqtbhidlcsxbxzmmyobuxewygyhgbbvkfcxewrdcwylmntoioxetoqabvthmdmiuxqungtgdpocxbczgmndlrqkcukfbtioxzyhyrcwhkrkawrkdwvsbyzxyzhqxbxbexqibiuxxtsqxvzmnakmtqhbdtdpcsxbczbypvucrghkhpzhcxkncydmwoxptbbvuxtftgqkthxdfgbgtflddpewsxbxmknlrcawvbhkmkdqbrndduxhphszczgqndvylkxcndhaszdplxmyxtrcdmsnyeubndokuxitanmyzpncxzvxaykfbtzclnrglcnqrdeogtzrywgtqakxtgdyminlrcawgtdmcldkcutgthrcuymahvbhvbwswkxciobzwaspnpmsxukfhc'
+
+    preprocessedA = preprocess(Q1a_m)
+    ciphertextA = encryption(Q1a_k, preprocessedA)
+
+    plaintext = decryption(Q1b_k, Q1b_c)
     print(plaintext)
 
 if __name__ == "__main__":
