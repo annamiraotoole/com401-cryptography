@@ -148,8 +148,22 @@ def decrypt_with_6_letter_key(ct, key):
 
     return plaintext
 
-def print_hello():
-    print("alsdkfjas;lfkjas;dlfkja TEST TEST TEST")
+
+def freq_assumption_helper(assumed_freqs, col_counts_sorted):
+        
+    key = ""
+
+    for col in range(6):
+        print("analyzing column ", col)
+        freq = col_counts_sorted[col][0][0]
+        print("most frequent ciphertext letter in column ", col, " is ", freq)
+        c = chr((ord(freq) - ord(assumed_freqs[col]))% 26 + ord('A'))
+        key += c
+        print("if that letter is encrypting ", "E", " then the key letter is ", c)
+        print()
+
+    return key
+
 
 def statistical(ct):
 
@@ -192,16 +206,10 @@ def statistical(ct):
 
     
     # FIRST ASSUME ALL COLUMNS ARE "E"
-    key = ""
 
-    for col in range(6):
-        print("analyzing column ", col)
-        freq = col_counts_sorted[col][0][0]
-        print("most frequent ciphertext letter in column ", col, " is ", freq)
-        c = chr((ord(freq) - ord("E"))% 26 + ord('A'))
-        key += c
-        print("if that letter is encrypting ", "E", " then the key letter is ", c)
-        print()
+    assumed_freqs = "EEEEEE"
+
+    key = freq_assumption_helper(assumed_freqs, col_counts_sorted)
 
     Q2b_m_guess = decrypt_with_6_letter_key(ct, key)
     print("if we decrypt with the resulting key we get ", Q2b_m_guess)
@@ -263,7 +271,8 @@ def test_part2():
     # PART 2
 
 
-    Q2a_seed='YWGYNMNPWADOWSMPWXTFMQSAQQHHDBINCQRYGVBCOXMDPQXAXJULES'
+    Q2a_seed='SHDUEJFICBGHFUEOQPLEUVNXHQPUELMNSIFHGEUFCBZXMEUWPSMEQI'
+
 
     Q2b_c='  BY NO UHNEI, VWMAPS MEEETBC NXIWJUZ MH SJI OHG,    T GUWKXO JJ IBZSU YJCNCF JDX UCBYJ;   UNE, OES MALU YI IXCGUYMEJ TKNX B SBLA GHYF,    MDR, B OP YP TZLJD WGW LHQEG.   RZV QNX HWE, IWBW EIU UHNEI, QO B FPOJEHGPE RAYHCF,    QJW ALWU CKHHO CKLM FOSKFFZOBU YTE;   ZUP RHF UKNGXO B RWVD-DPCAKLLVBP BG LU JDX WZPH--    LKTJ, XXWM BD UXA KXLTEJ HY EIQP?   BG XZ OKNMS, TQEW MSF IWZX, LT XA LAZPA DBL RSUU EHNLI,    E DXAU QHE FJ MYIUL GFHU LNAQBA   UR EIU QLX ZG JDBL ZJDPFXYU--EJX LSJBHBGR UXA UHI--    BBHHP XF JK LXWM OKN T NPKLEX?   JPK WKX ZMT, OTBO UXA RHFUX, WGW JPKN CTHT QNX MZP MATD    QPH WGREIYJZ MZVWDXK EIQJ LNPU;   OAM RZV VEGBDIUZ MAP HEKLX, HJJD MAP CEJXL LOT PAX MFQG--    IKLZ XKP WTE OKN FLOQCX MZ EE EM?   BY NO UHNEI, IWBW SJI BTMSFH, E MHZL JK MAP MQS,    TGO BHCNXO FQYA VLTU SBMS NO SBYP;   BDZ MAP NKOVNWBH OMKPOWPA, PSJSD BM RBLA MH XZ ZWP,    ALT BWLMPE JDX KPTJ KY FJ MYBX.   RZV QNX HWE, IWBW EIU UHNEI, EJX PZVBZ ATCEBU LNAQEOX    MSBJ UHNC FOA PTD BI OMXLEO WL XGFH;   UXM JPK XTELOSAW TY FUH HG EIU AGW ZG OKNK YPIA--    PALU CWWX JPK OH THGKHER NMURXK?   T IQRX TYTMAKXO UXNXX BVUOMBZOI, WGW EIQP BL POEQZA,    DBYZ ABD GQPAXC; EEJM ZTWU UHNCTUHY TTSI!   ZH RZV JDBGV J'
 
