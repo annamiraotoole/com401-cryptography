@@ -114,10 +114,12 @@ g3 = modP(g * g * g)       # order 4
     
 #     return key_pairs
 
+known_AES_bits_reverse = get_all_bits(Q3_known_pt, pad=8)
+known_AES_bits_reverse.reverse()
 
 def find_mjs():
 
-    secret = []
+    secret = [0, 0]
 
     # 63, 62, 61, ...... 4, 3, 2, 1, 0
     for j in reversed(range(len(Q3_cts))):
@@ -128,6 +130,8 @@ def find_mjs():
 
         found_cancellation = False
 
+        # TRY EACH KNOWN PLAINTEXT WORD
+        # k is the index of which two bits of of the plaintext AES we use
         for k in range(4):
             # get special two bits of known ciphertext at position k
             known_cts_bits = to_num(*get_2bits(Q3_known_cts[k], Q3_n, pad=256))
@@ -137,14 +141,15 @@ def find_mjs():
             xor_result = unknown_cts_bits ^ known_cts_bits
             assert(xor_result in range(4))
             if xor_result == 0:
-                mj_raw = to_num(*get_2bits(Q3_known_pt, 2*k, pad=8)) + 2*(k+1) - 2*(j+1)
+                #mj_raw = to_num(*get_2bits(Q3_known_pt, 2*k, pad=8)) + 2*(k+1) - 2*(j+1)
+                known_AES_2bits = known_AES_bits_reverse[2*k : 2*k+2]
+                known_AES_2bits.reverse()
+                mj_raw = to_num(*known_AES_2bits) + 2*(k+1) - 2*(j+1)
                 mj = mj_raw % 4
                 secret += get_all_bits(mj, pad=2)
                 found_cancellation = True
         
         assert found_cancellation
-    
-    secret += [0, 0]
 
     # print(len(secret))
     # print(len(Q3_cts))
