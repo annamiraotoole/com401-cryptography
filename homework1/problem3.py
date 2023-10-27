@@ -59,11 +59,11 @@ g1 = g                           # order 4
 g2 = modP(g * g)              # order 2
 g3 = modP(g * g * g)       # order 4
 
-print("the n and n+1 bits of each power of g, padded binary to 256 bit length")
-print(get_2bits(g0, Q3_n, pad=256))
-print(get_2bits(g1, Q3_n, pad=256))
-print(get_2bits(g2, Q3_n, pad=256))
-print(get_2bits(g3, Q3_n, pad=256))
+# print("the n and n+1 bits of each power of g, padded binary to 256 bit length")
+# print(get_2bits(g0, Q3_n, pad=256))
+# print(get_2bits(g1, Q3_n, pad=256))
+# print(get_2bits(g2, Q3_n, pad=256))
+# print(get_2bits(g3, Q3_n, pad=256))
 
 K_aes_known_bits = get_all_bits(Q3_known_pt, pad=8)
 
@@ -99,10 +99,10 @@ def find_mjs():
 
     secret = []
 
-    for j in len(Q3_cts):
+    for j in range(len(Q3_cts)):
 
         # get special two bits of unknown ciphertext at position j
-        unknown_cts_bits = to_num(*get_2bits(Q3_cts[j]), Q3_n, pad=256)
+        unknown_cts_bits = to_num(*get_2bits(Q3_cts[j], Q3_n, pad=256))
         assert(unknown_cts_bits in range(4))
 
         found_cancellation = False
@@ -122,15 +122,16 @@ def find_mjs():
         
         assert found_cancellation
     
-    assert len(secret) == len(Q3_cts)
+    print(len(secret))
+    print(len(Q3_cts))
+    assert len(secret) == 2*len(Q3_cts)
 
     # CONVERT LIST OF BITS TO INTEGER
     return to_num_long(secret)
 
+if __name__ == "__main__":
 
-print(find_mjs())
-
-
+    print(find_mjs())
 
     
     
