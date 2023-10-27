@@ -85,34 +85,6 @@ g3 = modP(g * g * g)       # order 4
 # print(get_2bits(g2, Q3_n, pad=256))
 # print(get_2bits(g3, Q3_n, pad=256))
 
-# K_aes_known_bits = get_all_bits(Q3_known_pt, pad=8)
-
-# # FIND K_EXP, K_XOR PAIRS
-
-
-# for every combo of possible KEXP and KXOR special bits
-
-
-# def find_keypair_possibilities():
-
-#     key_pairs = [] # Kexp, Kxor pairs
-
-#     # for every Kexp possibility
-#     for Kexp in range(4):
-#         for Kxor in range(4):
-#             for j in range(4):
-#                 # for every Kxor two-bit possibilities
-#                 for j in range(4):
-#                     mj = 2*K_aes_known_bits[2*j] + K_aes_known_bits[2*j + 1]                        # convert two bits of mj into an int mod 4
-#                     assert(mj in [0, 1, 2, 3])
-#                     g_power = modP(g ** (Kexp + mj + 2*(j+1)))
-#                     ct_guess = Kxor ^ to_num(*get_2bits(g_power, Q3_n, pad=256))
-#                     print("two bit ciphertext guess is ", ct_guess)
-#                     ct_known = to_num(*get_2bits(Q3_known_cts[j], Q3_n, pad=256))
-#                 if ct_known == ct_guess:                                                        # TODO MAYBE COMPARE BITS JUST IN CASE BUG?
-#                         key_pairs += [[Kexp, Kxor]]
-    
-#     return key_pairs
 
 known_AES_bits_reverse = get_all_bits(Q3_known_pt, pad=8)
 known_AES_bits_reverse.reverse()
@@ -151,11 +123,6 @@ def find_mjs():
         
         assert found_cancellation
 
-    # print(len(secret))
-    # print(len(Q3_cts))
-    # assert len(secret) == 2*len(Q3_cts)
-
-    # CONVERT LIST OF BITS TO INTEGER
     return modP(to_num_long(secret))
 
 
@@ -176,19 +143,3 @@ if __name__ == "__main__":
 
     
     
-
-
-
-#     for Kxor in Kxors:
-#         #multiply g^mj * g^Kexp XOR with Kxor possibility
-#         mj = bin_str_mj[]
-#         c = 
-#         check to see if this choice matches with known_cts at the two-bit position
-
-
-# first XOR with Kxor two-bit position 
-# then multiply by Kexp inverse
-# then multiply to correct for 2(j+1)
-
-
-# def decrypt(Q3_ct_aes, Q3_nonce, Q3_tag, Q3_cts)
