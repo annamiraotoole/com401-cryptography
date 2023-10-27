@@ -22,8 +22,9 @@ def get_all_bits(num, pad=0):
     if pad != 0:
         L = len(bits)
         padded_bits = ([0] * (pad - L)) + bits
-    assert (len(padded_bits) == pad)
-    return padded_bits
+        assert (len(padded_bits) == pad)
+        return padded_bits
+    return bits
 
 def get_bit(num, b, pad=0):
     bits = get_all_bits(num, pad=pad)
@@ -36,6 +37,20 @@ def get_2bits(num, b, pad=0):
 
 def to_num(b0, b1):
     return 2*b0 + b1
+
+def to_num_long(lst):
+    # if len(lst) == 0:
+    #     return 0
+    # elif len(lst) == 1:
+    #     return lst[0]
+    # else:
+    #     return lst[0] + 2*to_num_long(lst[1:])
+    
+    output = 0
+    for bit in lst:
+        assert (bit == 0) or (bit == 1)
+        output = output * 2 + bit
+    return output
 
 g = Q3_g
 
@@ -110,12 +125,13 @@ def find_mjs():
     assert len(secret) == len(Q3_cts)
 
     # CONVERT LIST OF BITS TO INTEGER
-            
+    return to_num_long(secret)
+
+
+print(find_mjs())
 
 
 
-
-        
     
     
 
