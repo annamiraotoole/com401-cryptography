@@ -58,24 +58,66 @@ K_aes_known_bits = get_all_bits(Q3_known_pt, pad=8)
 # for every combo of possible KEXP and KXOR special bits
 
 
-key_pairs = [] # Kexp, Kxor pairs
+def find_keypair_possibilities():
 
-# for every Kexp possibility
-for Kexp in range(4):
-    for Kxor in range(4):
-        for j in range(4):
-            # for every Kxor two-bit possibilities
+    key_pairs = [] # Kexp, Kxor pairs
+
+    # for every Kexp possibility
+    for Kexp in range(4):
+        for Kxor in range(4):
             for j in range(4):
-                mj = 2*K_aes_known_bits[2*j] + K_aes_known_bits[2*j + 1]                        # convert two bits of mj into an int mod 4
-                assert(mj in [0, 1, 2, 3])
-                g_power = modP(g ** (Kexp + mj + 2*(j+1)))
-                ct_guess = Kxor ^ to_num(*get_2bits(g_power, Q3_n, pad=256))
-                print("two bit ciphertext guess is ", ct_guess)
-                ct_known = to_num(*get_2bits(Q3_known_cts[j], Q3_n, pad=256))
-            if ct_known == ct_guess:                                                        # TODO MAYBE COMPARE BITS JUST IN CASE BUG?
-                    key_pairs += [[Kexp, Kxor]]
+                # for every Kxor two-bit possibilities
+                for j in range(4):
+                    mj = 2*K_aes_known_bits[2*j] + K_aes_known_bits[2*j + 1]                        # convert two bits of mj into an int mod 4
+                    assert(mj in [0, 1, 2, 3])
+                    g_power = modP(g ** (Kexp + mj + 2*(j+1)))
+                    ct_guess = Kxor ^ to_num(*get_2bits(g_power, Q3_n, pad=256))
+                    print("two bit ciphertext guess is ", ct_guess)
+                    ct_known = to_num(*get_2bits(Q3_known_cts[j], Q3_n, pad=256))
+                if ct_known == ct_guess:                                                        # TODO MAYBE COMPARE BITS JUST IN CASE BUG?
+                        key_pairs += [[Kexp, Kxor]]
     
-print(key_pairs)
+    return key_pairs
+
+
+def find_mjs():
+
+    secret = []
+
+    for j in len(Q3_cts):
+
+        # get special two bits of unknown ciphertext at position j
+        unknown_cts_bits = to_num(*get_2bits(Q3_cts[j]), Q3_n, pad=256)
+        assert(unknown_cts_bits in range(4))
+
+        found_cancellation = False
+
+        for k in range(4):
+            # get special two bits of known ciphertext at position k
+            known_cts_bits = to_num(*get_2bits(Q3_known_cts[k], Q3_n, pad=256))
+            assert(known_cts_bits in range(4))
+
+            # XOR ciphertexts
+            xor_result = unknown_cts_bits ^ known_cts_bits
+            if xor_result == 0:
+                mj_raw = to_num(*get_2bits(Q3_known_pt, k, pad=8)) + 2*(k+1) - 2*(j+1)
+                mj = mj_raw % 4
+                secret += get_all_bits(mj, pad=2)
+                found_cancellation = True
+        
+        assert found_cancellation
+    
+    assert len(secret) == len(Q3_cts)
+
+    # CONVERT LIST OF BITS TO INTEGER
+            
+
+
+
+
+        
+    
+    
 
 
 
@@ -91,4 +133,4 @@ print(key_pairs)
 # then multiply to correct for 2(j+1)
 
 
-# def decrypt(Q3_ct_aes, Q3_nonce, Q3_tag, Q3_cts):
+# def decrypt(Q3_ct_aes, Q3_nonce, Q3_tag, Q3_cts)
