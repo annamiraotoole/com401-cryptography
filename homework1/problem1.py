@@ -146,6 +146,10 @@ def main():
 
     preprocessedA = preprocess(Q1a_m)
     ciphertextA = encryption(Q1a_k, preprocessedA)
+    print(ciphertextA)
+    print(decryption(Q1a_k, ciphertextA))
+    print(decryption(Q1a_k, ciphertextA) == Q1a_m)
+    print()
 
     plaintext = decryption(Q1b_k, Q1b_c)
     print(plaintext)

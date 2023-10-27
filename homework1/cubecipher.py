@@ -226,8 +226,8 @@ def statistical(ct, Q2b_mhash):
     if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
         return key, Q2b_m_guess
     
-    # all combinations of 1st and 2nd only:
-    key_combos = char_combos_six("ETAO") #char_combos_six("ETAOINSHR")
+    # all combinations of a set of letters:
+    key_combos = char_combos_six("ETAOINSH") #char_combos_six("ETAOINSHR")
     for assumed_freqs in key_combos:
         print(assumed_freqs)
         key, Q2b_m_guess = test_assumption(assumed_freqs)
@@ -277,9 +277,9 @@ def test_part2():
 
     print("cipher text is ", test_ct)
 
-    key, plaintext = statistical(EXTRA_CT, EXTRA_MHASH)
+    key, plaintext = statistical(Q2b_c, Q2b_mhash)
 
-    print("ASSERTION IS ", hashlib.sha256(plaintext.encode()).hexdigest() == EXTRA_MHASH)
+    print("ASSERTION IS ", hashlib.sha256(plaintext.encode()).hexdigest() == Q2b_mhash)
 
     print("decryption with key ", key, " is:")
     print(plaintext)
@@ -292,7 +292,7 @@ def test_part2():
 if __name__ == "__main__":
 
 
-    test_part2()
+    test_part1()
 
 
 
