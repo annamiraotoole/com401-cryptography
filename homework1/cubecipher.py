@@ -134,6 +134,7 @@ def decrypt_with_6_letter_key(ct, key):
     plaintext = ""
     pos = 0
     mod_counter = 0
+
     while pos < len(ct):
         
         if ct[pos] not in string.ascii_uppercase:
@@ -150,18 +151,11 @@ def decrypt_with_6_letter_key(ct, key):
 
 
 def freq_assumption_helper(assumed_freqs, col_counts_sorted):
-        
     key = ""
-
     for col in range(6):
-        #print("analyzing column ", col)
         freq = col_counts_sorted[col][0][0]
-        #print("most frequent ciphertext letter in column ", col, " is ", freq)
         c = chr((ord(freq) - ord(assumed_freqs[col]))% 26 + ord('A'))
         key += c
-        #print("if that letter is encrypting ", "E", " then the key letter is ", c)
-        #print()
-
     return key
 
 
@@ -183,25 +177,15 @@ def statistical(ct, Q2b_mhash):
             ct_only_alphabet += c
     ct_cols = [ct_only_alphabet[i::6] for i in range(6)]
 
-    # count occurences of each letter, store this info somehow
-        # find the most common letter in each column
+    # count occurences of each letter, store this info in dict
+    # find the most common letter in each column
     col_counts = [Counter(col_str) for col_str in ct_cols]
-
     col_counts_sorted = [sorted(c.items(), key=lambda x: x[1], reverse=True) for c in col_counts]
-
-    # call the most frequent letter in column 0, F0
 
     english_freqs = ['E', 'T', 'A', 'O', 'I', 'N', 'S', 'H', 'R', 'D',
                       'L', 'C', 'U', 'M', 'W', 'F', 'G', 'Y', 'P', 'B',
                         'V', 'K', 'J', 'X', 'Q', 'Z']
     
-    
-    # given list of english letters sorted most to least common
-    # for EL in english_freqs:
-        # assume that F0's decryption is the letter LT
-        # solve for what the key letter is = F0 - LT mod 26
-        # chr((ord(ct[pos]) - ord(self.cube.get_piece(1, 1, -1).colors[1]))% 26 + ord('A')) 
-
 
     key, Q2b_m_guess = "", ""
 
