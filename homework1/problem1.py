@@ -119,6 +119,20 @@ def decryption(key, ciphertext):
     return "".join(plaintext)
 
 
+def print_problem1(Q1a_m, Q1a_k, Q1b_k, Q1b_c):
+
+    print("PROBLEM 1 ANSWERS")
+    print()
+
+    # part A
+    preprocessedA = preprocess(Q1a_m)
+    ciphertextA = encryption(Q1a_k, preprocessedA)
+    print("PART A CIPHERTEXT IS: ", ciphertextA)
+    print()
+
+    # part 2
+    print("PART B DECRYPTED CIPHERTEXT IS: ", decryption(Q1b_k, Q1b_c))
+
 def main():
 
     Q1a_m = "To anyone who knew the country well, the mere style and title of Don Quixote of La Mancha gave the key to the authors meaning at once. La Mancha as the knights country and scene of his chivalries is of a piece with the pasteboard helmet, the farm-labourer on ass-back for a squire, knighthood conferred by a rascally ventero, convicts taken for victims of oppression, and the rest of the incongruities between Don Quixotes world and the world he lived in, between things as he saw them and things as they were."
@@ -144,15 +158,7 @@ def main():
             ['h', 'o', 'y', 'd', 'u']]
     Q1b_c='fkzcbxhkgtdmbymiuxhxyliqlnbtnhdmwoxptbxunkwazsnkdlfpwxlncusxmhzsexzgndvbcyvxokixmgogoyyendkahqvxxgdnpsawebbdnykfkgyogxuqzcbgtfqkcwdkqkcziopwxlfgmkcuqkcqnsswdmqkuxuslnpnvbfygxucqkyxyqlnvsndozsxnzqkyzwaspglhwpfpgcuiocubzndhnymbyzbgtzbeobqglxpvbbxmkyftghryhfgkqfpwxlnbgyowkxsxbczxbdpyevbkndkmntoioqkbitfcuuqmktbuxlfxcczkoldioxcgmcwotzxhkgtdmxylcbdmkkfvwokhmqylzwqkhrgndynsvywlnrgiobvnlrcawgtdmcbxyuqbggpspotzssacwyrhgzadpgmbwvwbgbiuxqtbhidlcsxbxzmmyobuxewygyhgbbvkfcxewrdcwylmntoioxetoqabvthmdmiuxqungtgdpocxbczgmndlrqkcukfbtioxzyhyrcwhkrkawrkdwvsbyzxyzhqxbxbexqibiuxxtsqxvzmnakmtqhbdtdpcsxbczbypvucrghkhpzhcxkncydmwoxptbbvuxtftgqkthxdfgbgtflddpewsxbxmknlrcawvbhkmkdqbrndduxhphszczgqndvylkxcndhaszdplxmyxtrcdmsnyeubndokuxitanmyzpncxzvxaykfbtzclnrglcnqrdeogtzrywgtqakxtgdyminlrcawgtdmcldkcutgthrcuymahvbhvbwswkxciobzwaspnpmsxukfhc'
 
-    preprocessedA = preprocess(Q1a_m)
-    ciphertextA = encryption(Q1a_k, preprocessedA)
-    print(ciphertextA)
-    print(decryption(Q1a_k, ciphertextA))
-    print(decryption(Q1a_k, ciphertextA) == Q1a_m)
-    print()
-
-    plaintext = decryption(Q1b_k, Q1b_c)
-    print(plaintext)
+    print_problem1(Q1a_m, Q1a_k, Q1b_k, Q1b_c)
 
 if __name__ == "__main__":
     main()

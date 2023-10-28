@@ -183,20 +183,11 @@ def statistical(ct, Q2b_mhash):
             ct_only_alphabet += c
     ct_cols = [ct_only_alphabet[i::6] for i in range(6)]
 
-    print("ct_cols is ", ct_cols)
-    print()
-
     # count occurences of each letter, store this info somehow
         # find the most common letter in each column
     col_counts = [Counter(col_str) for col_str in ct_cols]
-    print("col_counts is ", col_counts)
-    print()
 
     col_counts_sorted = [sorted(c.items(), key=lambda x: x[1], reverse=True) for c in col_counts]
-    print("col_counts_sorted is :")
-    for i in range(6):
-        print("col ", i, " counts are ", col_counts_sorted[i])
-    print()
 
     # call the most frequent letter in column 0, F0
 
@@ -218,18 +209,11 @@ def statistical(ct, Q2b_mhash):
         key = freq_assumption_helper(assumed_freqs, col_counts_sorted)
         Q2b_m_guess = decrypt_with_6_letter_key(ct, key)
         return key, Q2b_m_guess
-        
-
-    # FIRST ASSUME ALL COLUMNS ARE "E"
-    all_E = "EEEEEE"
-    key, Q2b_m_guess = test_assumption(all_E)
-    if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
-        return key, Q2b_m_guess
     
     # all combinations of a set of letters:
-    key_combos = char_combos_six("ETAOINSH") #char_combos_six("ETAOINSHR")
+    key_combos = char_combos_six("ETAOINSH") 
     for assumed_freqs in key_combos:
-        print(assumed_freqs)
+        # print(assumed_freqs)
         key, Q2b_m_guess = test_assumption(assumed_freqs)
         if hashlib.sha256(Q2b_m_guess.encode()).hexdigest() == Q2b_mhash:
             return key, Q2b_m_guess
@@ -284,15 +268,39 @@ def test_part2():
     print("decryption with key ", key, " is:")
     print(plaintext)
 
-    # print(key)
-    # print(plaintext)
 
+def print_cubecipher(Q2a_seed, Q2a_c, Q2a_mhash, Q2b_c, Q2b_mhash):
+
+    print("PROBLEM 2 CUBECIPHER ANSWERS")
+    print()
+
+    # PART A
+    C = CubeCipher(Q2a_seed)
+    Q2a_m = C.decrypt(Q2a_c)
+    print("PART A DECRYPTED CIPHERTEXT IS: ", Q2a_m)
+    print("PART A HASH ASSERTION IS: ", hashlib.sha256(Q2a_m.encode()).hexdigest() == Q2a_mhash)
+    print()
+
+    # PART B
+
+    key, plaintext = statistical(Q2b_c, Q2b_mhash)
+
+    print("PART B KEY WAS: ", key)
+    print("DECRYPTION WITH KEY IS: ", plaintext)
+    print("PART B HASH ASSERTION IS: ", hashlib.sha256(plaintext.encode()).hexdigest() == Q2b_mhash)
+    print()
 
 
 if __name__ == "__main__":
 
+    Q2a_seed='YWGYNMNPWADOWSMPWXTFMQSAQQHHDBINCQRYGVBCOXMDPQXAXJULES'
+    Q2a_c='EMOW QEDQ, MCB KPQZTB PHQUG CUEE MCB IOGFWQ OO HQGW SIPQ, QSP STQ VYENQP RMQRMST YO STQ LCJT AZ. WCN LUEICJEDE LCNE BQGDACFXN OQIQF IGHL ETT EKT FA IFA PMDI YXOGF WCN RQBTYPIZS NMQ ADQ DJZ, FMFWCN WUXAGWM, FA IFA CMFTPLIXXPP, WNP FWC SODPH YHL OABGJG PUUDARQZI, YJD FTTL PHQ YDAG TGDIJA DDQL Y HOZS QPAAFT, PLZ SMUS RDAFE KCNY OGGGKUE.  UIQ WLX MQMQT ME RSNIAGH YO IF OPL XE, EMXB PHQ SGWLHAZ.  XR WLX OPKA DURUCNEZF! IFA MAOZ RQRFXT PAPQMICZ TTAJEDTRGAJU. I ETDSHD XUZC PO TQPP DED FGW WNP DTNAAF EDKATTUCE JOI. FTJH HQD IM XESUC. FA LAAZCZ AF FWC CRKBWMJ AE UU FA TTAJEDT UF WYZ SAYT IENP AU YQTTAGGPY AHTP WLUOT.  QPAZP JN WNP DTNAAF "FXQ PHQ HDGYE AR IFA SXGVEWRP," EPGZ TTQ VPUPTAC.  FKW FTT ANEMFJPAS ADSCN OZQ PZKUF, MCB IAWQ DLA RQBTYP LQEHMJS! FTDSCHF MAGYE; U YXEDT ME LCHL NQ PR OCTADJ WT AZRC. DOIQKCN, STQ VMP UB, MCB XESMC RK RQBTYP IF, NJR DED TTYZ WME HM BUXX DD PHQ XDZOTQD FSWDDUAJA, TTMI QDE TMGBHY WZTU SHMF HFA WME HYUIZS, PLZ TTQ LMNDE OPKA VQDN OQEQD XLZEQP:--   IGO TTQ KMECQ AU RDE XAQQPED; U WCWRP TXK ZEOXPPA,   "YAG WYRE NMZCZ MQ FDM XRAIC, G IUEF HSCAD YN FWID."   MH Y ZUOW LGPH UFH CUEXUSQ, OO TQ LGPH TUH LKSQ   FGGIS TUH ZALF MCB DIE NJRPOZE, PLZ TGDCQ KUF TXQ POQE. '
+    Q2a_mhash='599aa36ad3fb3611ff0e274e4058bc77ccf0f3677558dd5873da64bef4c8dbc9'
 
-    test_part1()
+    Q2b_c='  BY NO UHNEI, VWMAPS MEEETBC NXIWJUZ MH SJI OHG,    T GUWKXO JJ IBZSU YJCNCF JDX UCBYJ;   UNE, OES MALU YI IXCGUYMEJ TKNX B SBLA GHYF,    MDR, B OP YP TZLJD WGW LHQEG.   RZV QNX HWE, IWBW EIU UHNEI, QO B FPOJEHGPE RAYHCF,    QJW ALWU CKHHO CKLM FOSKFFZOBU YTE;   ZUP RHF UKNGXO B RWVD-DPCAKLLVBP BG LU JDX WZPH--    LKTJ, XXWM BD UXA KXLTEJ HY EIQP?   BG XZ OKNMS, TQEW MSF IWZX, LT XA LAZPA DBL RSUU EHNLI,    E DXAU QHE FJ MYIUL GFHU LNAQBA   UR EIU QLX ZG JDBL ZJDPFXYU--EJX LSJBHBGR UXA UHI--    BBHHP XF JK LXWM OKN T NPKLEX?   JPK WKX ZMT, OTBO UXA RHFUX, WGW JPKN CTHT QNX MZP MATD    QPH WGREIYJZ MZVWDXK EIQJ LNPU;   OAM RZV VEGBDIUZ MAP HEKLX, HJJD MAP CEJXL LOT PAX MFQG--    IKLZ XKP WTE OKN FLOQCX MZ EE EM?   BY NO UHNEI, IWBW SJI BTMSFH, E MHZL JK MAP MQS,    TGO BHCNXO FQYA VLTU SBMS NO SBYP;   BDZ MAP NKOVNWBH OMKPOWPA, PSJSD BM RBLA MH XZ ZWP,    ALT BWLMPE JDX KPTJ KY FJ MYBX.   RZV QNX HWE, IWBW EIU UHNEI, EJX PZVBZ ATCEBU LNAQEOX    MSBJ UHNC FOA PTD BI OMXLEO WL XGFH;   UXM JPK XTELOSAW TY FUH HG EIU AGW ZG OKNK YPIA--    PALU CWWX JPK OH THGKHER NMURXK?   T IQRX TYTMAKXO UXNXX BVUOMBZOI, WGW EIQP BL POEQZA,    DBYZ ABD GQPAXC; EEJM ZTWU UHNCTUHY TTSI!   ZH RZV JDBGV J'
+    Q2b_mhash='db4ccc8587a6722ba0e55dcfb2f0003698136398269dcbb7785ac6140d0c7857'
+
+    print_cubecipher(Q2a_seed, Q2a_c, Q2a_mhash, Q2b_c, Q2b_mhash)
 
 
 
